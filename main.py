@@ -1,4 +1,13 @@
 ########################################################################
+###################  RaspberryPiPicoW + MicroPython  ###################
+##################  MicroPython v1.23.0 on 2024-06-02  #################
+#======================================================================#
+# WiFi Access Point + HTTP server                                      #
+# Features:                                                            #
+#   1. Display of temperature sensor value                             #
+#   2. LED control                                                     #
+########################################################################
+
 import socket
 import network, uos, machine
 import time
@@ -12,17 +21,17 @@ led1.freq(100)
 
 time.sleep(1)
 led.off()
-print('***** Start Server *****')
+
 ap = network.WLAN(network.AP_IF)
 #ap.config(essid='PicoW', password='123456789')
-ap.config(essid='PicoW', channel=9, security=0)
-#ap.config(essid='PicoW', security=0)
+ap.config(essid='PicoW', security=0)
+#ap.config(essid='PicoW', channel=9, security=0)
 ap.active(True)
 
 while ap.active() == False:
     pass
 
-print('Connection successful')
+print('Access Point successful')
 print(ap.ifconfig())
 #=======================================================================
 def web_page_temp(temp):
@@ -235,13 +244,14 @@ s.bind(('', 80))
 s.listen(5)
 
 def main_():
+    print('***** Start Server *****')
     while True:
-        print("\n<> ******* wait connect *******")
+        print("\n***** wait connect *****")
         conn, addr = s.accept()
         led.on()
         conn.settimeout(10.0)
 
-        print('Connection from %s' % str(addr))
+        print('Connection from {}'.format(addr))
         try:
             client(conn)
         except  Exception as err:
